@@ -9,10 +9,12 @@ int a[100005], n;
 data find_cross_subarray(int lo, int mid, int hi)
 {
     int left_sum = INT_MIN, right_sum = INT_MIN;
+    int mx1 = INT_MIN, mx2 = INT_MIN;
     int sum = 0, max_left=n, max_right=0;
     for(int i=mid; i>=0; i--)
     {
         sum += a[i];
+        mx1 = max(mx1, a[i]);
         if(sum>left_sum)
         {
             left_sum = sum;
@@ -21,19 +23,24 @@ data find_cross_subarray(int lo, int mid, int hi)
     }
 
     sum = 0;
+    mx2 = INT_MIN;
     for(int i=mid+1; i<=min(hi, n-1); i++)
     {
         sum += a[i];
+        mx2 = max(mx2, a[i]);
         if(sum>right_sum)
         {
             right_sum = sum;
             max_right = i;
         }
     }
-    if(left_sum==INT_MIN) left_sum = 0;
-    if(right_sum==INT_MIN) right_sum = 0;
-    //debug3(lo, mid, hi);
-    //debug2(left_sum, right_sum);
+
+    if(left_sum == INT_MIN or right_sum == INT_MIN)
+    {
+        left_sum = max(mx1, mx2);
+        right_sum = 0;
+    }
+
     data d;
     d.low = max_left;
     d.high = max_right;
@@ -70,7 +77,6 @@ int32_t main()
     cin >> n;
     cout << "\nEnter input of the elements: ";
     for(int i=0; i<n; i++) cin >> a[i];
-    data dat = find_maximum_subarray(0, n);
+    data dat = find_maximum_subarray(0, n-1);
     cout << "\nMaximum sum subarray is: " << dat.sum << endl;
 }
-///Created:
